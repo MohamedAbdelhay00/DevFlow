@@ -48,7 +48,7 @@ const SocialAuthForm = () => {
           width={20}
           height={20}
           alt="Google Logo"
-          className="invert-colors mr-2.5 object-contain"
+          className=" mr-2.5 object-contain"
         />
         <span>Log in with Google</span>
       </Button>
