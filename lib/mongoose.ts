@@ -1,9 +1,11 @@
 import mongoose, { Mongoose } from "mongoose";
 
-const MONOGO_URI = process.env.MONGO_URI as string;
+import logger from "./logger";
 
-if (!MONOGO_URI) {
-  throw new Error("MONOGO_URI is not defined");
+const MONGODB_URI = process.env.MONGODB_URI as string;
+
+if (!MONGODB_URI) {
+  throw new Error("MONGODB_URI is not defined");
 }
 
 interface MongooseCache {
@@ -24,24 +26,27 @@ if (!cached) {
 
 const dbConnect = async (): Promise<Mongoose> => {
   if (cached.conn) {
+    logger.info("Using existing mongoose connection");
     return cached.conn;
   }
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(MONOGO_URI, {
+      .connect(MONGODB_URI, {
         dbName: "devflow",
       })
       .then((result) => {
-        console.log("Connected to MongoDB");
+        logger.info("Connected to MongoDB");
         return result;
       })
       .catch((error) => {
-        console.error("Error connecting to MongoDB", error);
+        logger.error("Error connecting to MongoDB", error);
         throw error;
       });
   }
+
   cached.conn = await cached.promise;
+
   return cached.conn;
 };
 
